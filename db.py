@@ -15,12 +15,18 @@ class Ad(Base):
     price = Column(String)
     published = Column(Boolean)
     ownerId = Column(Integer)
+    ownerUsername = Column(String)
+    ownerContact = Column(String)
+    deleted = Column(Boolean)
     
-    def __init__(self, title=None, price=None, published=None, ownerId=None):
+    def __init__(self, title=None, price=None, published=None, ownerId=None, ownerUsername=None,ownerContact=None, deleted=False):
         self.title = title
         self.price = price
         self.published = published
         self.ownerId = ownerId
+        self.ownerUsername = ownerUsername
+        self.ownerContact = ownerContact
+        self.deleted = deleted
     
     def __str__(self):
         return "<Ad('%s','%s')>" % (self.title, self.price)
