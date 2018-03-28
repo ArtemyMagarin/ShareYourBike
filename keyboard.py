@@ -1,5 +1,5 @@
 from telebot import types
-from json import dumps
+import json
 
 
 MAIN_KEYBOARD = types.ReplyKeyboardMarkup(row_width=2, resize_keyboard=True)
@@ -24,10 +24,14 @@ def OWNER_INLINE_KEYBOARD(ad, remove_service_btns=False):
     edit_button = types.InlineKeyboardButton(text="Редактировать", callback_data=json.dumps({"type":"edit", "id":ad.id}))
     hide_button = types.InlineKeyboardButton(text= "Скрыть" if ad.published else "Опубликовать", callback_data=json.dumps({"type":"toggle_hide", "id":ad.id}))
     delete_button = types.InlineKeyboardButton(text="Удалить", callback_data=json.dumps({"type":"delete", "id":ad.id}))
+    undo_delete_button = types.InlineKeyboardButton(text="Отмена", callback_data=json.dumps({"type":"undo_delete", "id":ad.id}))
+
     k.add(prev_button, next_button)
     if not remove_service_btns:
         k.add(edit_button)
         k.add(delete_button, hide_button)
+    else:
+        k.add(undo_delete_button)
     return k
 
 

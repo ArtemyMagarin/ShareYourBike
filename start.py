@@ -166,7 +166,14 @@ def callback_inline_my(call):
 
         if not ad:
             ad = session.query(db.Ad).filter(db.Ad.ownerId==call.message.chat.id).filter(db.Ad.deleted==False).first()
- 
+        if not ad:
+            response_message_text = 'Объявлений пока нет.'
+            bot.edit_message_text(chat_id=call.message.chat.id, message_id=call.message.message_id, parse_mode="HTML", text=response_message_text)
+            session.close()
+            return
+        if ad.id == data['id']:
+            return
+
         session.close()
         response_message_text = '<b>{title}</b>\nЦена: {price}\n\n'.format(
         title=ad.title.capitalize(), 
@@ -181,7 +188,13 @@ def callback_inline_my(call):
 
         if not ad:
             ad = session.query(db.Ad).filter(db.Ad.ownerId==call.message.chat.id).filter(db.Ad.deleted==False).order_by(desc(db.Ad.id)).first()
-
+        if not ad:
+            response_message_text = 'Объявлений пока нет.'
+            bot.edit_message_text(chat_id=call.message.chat.id, message_id=call.message.message_id, parse_mode="HTML", text=response_message_text)
+            session.close()
+            return
+        if ad.id == data['id']:
+            return
 
         session.close()
         response_message_text = '<b>{title}</b>\nЦена: {price}\n\n'.format(
@@ -241,11 +254,30 @@ def callback_inline_my(call):
         
         bot.edit_message_text(chat_id=call.message.chat.id, message_id=call.message.message_id, parse_mode="HTML", text=response_message_text, reply_markup=k)
 
+    if data['type'] == 'undo_delete':
+        ad = session.query(db.Ad).filter(db.Ad.id == data['id']).first()
+        ad.deleted = False
+        k = keyboard.OWNER_INLINE_KEYBOARD(ad)
+        response_message_text = '<b>{title}</b>\nЦена: {price}\n\n'.format(
+        title=ad.title.capitalize(), 
+        price=ad.price)
+
+        session.add(ad)
+        session.commit()
+        session.close()
+
+
+
+        
+        bot.edit_message_text(chat_id=call.message.chat.id, message_id=call.message.message_id, parse_mode="HTML", text=response_message_text, reply_markup=k)
+
 
     if data['type'] == "next":
         ad = session.query(db.Ad).filter(db.Ad.published==True).filter(db.Ad.deleted==False).filter(db.Ad.id > data['id']).first()
         if not ad:
             ad = session.query(db.Ad).filter(db.Ad.deleted==False).filter(db.Ad.published==True).first() 
+        if ad.id == data['id']:
+            return
         session.close()
         response_message_text = '<b>{title}</b>\nЦена: {price}\n\n'.format(
         title=ad.title.capitalize(), 
@@ -259,7 +291,8 @@ def callback_inline_my(call):
         ad = session.query(db.Ad).filter(db.Ad.deleted==False).filter(db.Ad.published==True).order_by(desc(db.Ad.id)).filter(db.Ad.id < data['id']).first()
         if not ad:
             ad = session.query(db.Ad).filter(db.Ad.deleted==False).filter(db.Ad.published==True).order_by(desc(db.Ad.id)).first() 
-
+        if ad.id == data['id']:
+            return
         session.close()
         response_message_text = '<b>{title}</b>\nЦена: {price}\n\n'.format(
         title=ad.title.capitalize(), 
@@ -272,21 +305,21 @@ def callback_inline_my(call):
 
 
     if data['type'] == "rent":
-        ad = session.query(db.Ad).filter(db.Ad.deleted==False).filter(db.Ad.published==True).filter(db.Ad.id == data['id']).first()
-        session.close()
+        ad = session.query(db.Ad).filter(db.Ad.id == data['id']).first()
 
-        if not ad:
+        if ad.deleted or not ad.published:
             response_message_text = '<b>Объявление удалено. Попробуйте подобрать что-то еще.</b>'
         else:
             # ТУТ ЛОГИКА УЧЕТА АКТИВНОСТИ
 
             if ad.ownerUsername:
-                response_message_text="Для связи с владельцем велосипеда, перейдите к диалогу:\n\n t.me/"+ad.ownerUsername
+                response_message_text="Для связи с владельцем велосипеда, перейдите к диалогу:\n t.me/"+ad.ownerUsername
             else:
-                response_message_text="Для связи с владельцем велосипеда, воспользуйтесь этими контактными данными:\n\n"
+                response_message_text="Для связи с владельцем велосипеда, воспользуйтесь этими контактными данными:\n"
                 response_message_text+=ad.ownerContact
 
-        k = keyboard.GLOBAL_INLINE_KEYBOARD(ad, remove_contact_btn=True):
+        k = keyboard.GLOBAL_INLINE_KEYBOARD(ad, remove_contact_btn=True)
+        session.close()
         bot.edit_message_text(chat_id=call.message.chat.id, message_id=call.message.message_id, parse_mode="HTML", text=response_message_text, reply_markup=k)
 
 
