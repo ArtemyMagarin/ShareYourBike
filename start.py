@@ -71,7 +71,6 @@ def new_ad_step_3(message):
         return
 
     currentEditors[message.chat.id].price = message.text.strip()
-
     currentEditors[message.chat.id].ownerId = message.from_user.id
     currentEditors[message.chat.id].ownerUsername = message.from_user.username
 
@@ -153,17 +152,7 @@ def show_my_ads(msg):
         price=ad.price)
 
 
-    k = types.InlineKeyboardMarkup(row_width=2)
-    next_button = types.InlineKeyboardButton(text=">>", callback_data=json.dumps({"type":"my_next", "id":ad.id}))
-    prev_button = types.InlineKeyboardButton(text="<<", callback_data=json.dumps({"type":"my_prev", "id":ad.id}))
-    edit_button = types.InlineKeyboardButton(text="Редактировать", callback_data=json.dumps({"type":"edit", "id":ad.id}))
-    hide_button = types.InlineKeyboardButton(text= "Скрыть" if ad.published else "Опубликовать", callback_data=json.dumps({"type":"toggle_hide", "id":ad.id}))
-    delete_button = types.InlineKeyboardButton(text="Удалить", callback_data=json.dumps({"type":"delete", "id":ad.id}))
-
-    
-    k.add(prev_button, next_button)
-    k.add(edit_button)
-    k.add(delete_button, hide_button)
+    k = keyboard.OWNER_INLINE_KEYBOARD(ad)
 
     bot.send_message(msg.chat.id, response_message_text, parse_mode='HTML', reply_markup=k)
 
@@ -183,18 +172,7 @@ def callback_inline_my(call):
         title=ad.title.capitalize(), 
         price=ad.price)
 
-
-        k = types.InlineKeyboardMarkup(row_width=2)
-        next_button = types.InlineKeyboardButton(text=">>", callback_data=json.dumps({"type":"my_next", "id":ad.id}))
-        prev_button = types.InlineKeyboardButton(text="<<", callback_data=json.dumps({"type":"my_prev", "id":ad.id}))
-        edit_button = types.InlineKeyboardButton(text="Редактировать", callback_data=json.dumps({"type":"edit", "id":ad.id}))
-        hide_button = types.InlineKeyboardButton(text= "Скрыть" if ad.published else "Опубликовать", callback_data=json.dumps({"type":"toggle_hide", "id":ad.id}))
-        delete_button = types.InlineKeyboardButton(text="Удалить", callback_data=json.dumps({"type":"delete", "id":ad.id}))
-
-        
-        k.add(prev_button, next_button)
-        k.add(edit_button)
-        k.add(delete_button, hide_button)
+        k = keyboard.OWNER_INLINE_KEYBOARD(ad)
 
         bot.edit_message_text(chat_id=call.message.chat.id, message_id=call.message.message_id, parse_mode="HTML", text=response_message_text, reply_markup=k)
 
@@ -210,18 +188,7 @@ def callback_inline_my(call):
         title=ad.title.capitalize(), 
         price=ad.price)
 
-
-        k = types.InlineKeyboardMarkup(row_width=2)
-        next_button = types.InlineKeyboardButton(text=">>", callback_data=json.dumps({"type":"my_next", "id":ad.id}))
-        prev_button = types.InlineKeyboardButton(text="<<", callback_data=json.dumps({"type":"my_prev", "id":ad.id}))
-        edit_button = types.InlineKeyboardButton(text="Редактировать", callback_data=json.dumps({"type":"edit", "id":ad.id}))
-        hide_button = types.InlineKeyboardButton(text= "Скрыть" if ad.published else "Опубликовать", callback_data=json.dumps({"type":"toggle_hide", "id":ad.id}))
-        delete_button = types.InlineKeyboardButton(text="Удалить", callback_data=json.dumps({"type":"delete", "id":ad.id}))
-
-        
-        k.add(prev_button, next_button)
-        k.add(edit_button)
-        k.add(delete_button, hide_button)
+        k = keyboard.OWNER_INLINE_KEYBOARD(ad)
 
         bot.edit_message_text(chat_id=call.message.chat.id, message_id=call.message.message_id, parse_mode="HTML", text=response_message_text, reply_markup=k)
 
@@ -233,18 +200,8 @@ def callback_inline_my(call):
         
         response_message_text = '<b>В разработке</b>'
        
+        k = keyboard.OWNER_INLINE_KEYBOARD(ad)
 
-        k = types.InlineKeyboardMarkup(row_width=2)
-        next_button = types.InlineKeyboardButton(text=">>", callback_data=json.dumps({"type":"my_next", "id":ad.id}))
-        prev_button = types.InlineKeyboardButton(text="<<", callback_data=json.dumps({"type":"my_prev", "id":ad.id}))
-        edit_button = types.InlineKeyboardButton(text="Редактировать", callback_data=json.dumps({"type":"edit", "id":ad.id}))
-        hide_button = types.InlineKeyboardButton(text= "Скрыть" if ad.published else "Опубликовать", callback_data=json.dumps({"type":"toggle_hide", "id":ad.id}))
-        delete_button = types.InlineKeyboardButton(text="Удалить", callback_data=json.dumps({"type":"delete", "id":ad.id}))
-
-        
-        k.add(prev_button, next_button)
-        k.add(edit_button)
-        k.add(delete_button, hide_button)
         bot.edit_message_text(chat_id=call.message.chat.id, message_id=call.message.message_id, parse_mode="HTML", text=response_message_text, reply_markup=k)
 
     if data['type'] == 'toggle_hide':
@@ -254,17 +211,7 @@ def callback_inline_my(call):
         else:
             ad.published = True
 
-        k = types.InlineKeyboardMarkup(row_width=2)
-        next_button = types.InlineKeyboardButton(text=">>", callback_data=json.dumps({"type":"my_next", "id":ad.id}))
-        prev_button = types.InlineKeyboardButton(text="<<", callback_data=json.dumps({"type":"my_prev", "id":ad.id}))
-        edit_button = types.InlineKeyboardButton(text="Редактировать", callback_data=json.dumps({"type":"edit", "id":ad.id}))
-        hide_button = types.InlineKeyboardButton(text= "Скрыть" if ad.published else "Опубликовать", callback_data=json.dumps({"type":"toggle_hide", "id":ad.id}))
-        delete_button = types.InlineKeyboardButton(text="Удалить", callback_data=json.dumps({"type":"delete", "id":ad.id}))
-
-        
-        k.add(prev_button, next_button)
-        k.add(edit_button)
-        k.add(delete_button, hide_button)
+        k = keyboard.OWNER_INLINE_KEYBOARD(ad)
 
         response_message_text = '<b>{title}</b>\nЦена: {price}\n\n'.format(
         title=ad.title.capitalize(), 
@@ -282,11 +229,7 @@ def callback_inline_my(call):
     if data['type'] == 'delete':
         ad = session.query(db.Ad).filter(db.Ad.id == data['id']).first()
         ad.deleted = True
-        k = types.InlineKeyboardMarkup(row_width=2)
-        next_button = types.InlineKeyboardButton(text=">>", callback_data=json.dumps({"type":"my_next", "id":ad.id}))
-        prev_button = types.InlineKeyboardButton(text="<<", callback_data=json.dumps({"type":"my_prev", "id":ad.id}))
-        
-        k.add(prev_button, next_button)
+        k = keyboard.OWNER_INLINE_KEYBOARD(ad, True)
 
         session.add(ad)
         session.commit()
@@ -308,15 +251,7 @@ def callback_inline_my(call):
         title=ad.title.capitalize(), 
         price=ad.price)
 
-
-        k = types.InlineKeyboardMarkup(row_width=2)
-        next_button = types.InlineKeyboardButton(text=">>", callback_data=json.dumps({"type":"next", "id":ad.id}))
-        prev_button = types.InlineKeyboardButton(text="<<", callback_data=json.dumps({"type":"prev", "id":ad.id}))
-        contact_button = types.InlineKeyboardButton(text="Взять напрокат", callback_data=json.dumps({"type":"rent", "id":ad.id}))
-
-        
-        k.add(prev_button, next_button)
-        k.add(contact_button)
+        k = keyboard.GLOBAL_INLINE_KEYBOARD(ad)
 
         bot.edit_message_text(chat_id=call.message.chat.id, message_id=call.message.message_id, parse_mode="HTML", text=response_message_text, reply_markup=k)
 
@@ -331,14 +266,7 @@ def callback_inline_my(call):
         price=ad.price)
 
 
-        k = types.InlineKeyboardMarkup(row_width=2)
-        next_button = types.InlineKeyboardButton(text=">>", callback_data=json.dumps({"type":"next", "id":ad.id}))
-        prev_button = types.InlineKeyboardButton(text="<<", callback_data=json.dumps({"type":"prev", "id":ad.id}))
-        contact_button = types.InlineKeyboardButton(text="Взять напрокат", callback_data=json.dumps({"type":"rent", "id":ad.id}))
-
-        
-        k.add(prev_button, next_button)
-        k.add(contact_button)
+        k = keyboard.GLOBAL_INLINE_KEYBOARD(ad)
 
         bot.edit_message_text(chat_id=call.message.chat.id, message_id=call.message.message_id, parse_mode="HTML", text=response_message_text, reply_markup=k)
 
@@ -358,11 +286,7 @@ def callback_inline_my(call):
                 response_message_text="Для связи с владельцем велосипеда, воспользуйтесь этими контактными данными:\n\n"
                 response_message_text+=ad.ownerContact
 
-        k = types.InlineKeyboardMarkup(row_width=2)
-        next_button = types.InlineKeyboardButton(text=">>", callback_data=json.dumps({"type":"next", "id":ad.id}))
-        prev_button = types.InlineKeyboardButton(text="<<", callback_data=json.dumps({"type":"prev", "id":ad.id}))
-    
-        k.add(prev_button, next_button)
+        k = keyboard.GLOBAL_INLINE_KEYBOARD(ad, remove_contact_btn=True):
         bot.edit_message_text(chat_id=call.message.chat.id, message_id=call.message.message_id, parse_mode="HTML", text=response_message_text, reply_markup=k)
 
 
@@ -386,17 +310,7 @@ def new_rent(msg):
         title=ad.title.capitalize(), 
         price=ad.price)
 
-
-    k = types.InlineKeyboardMarkup(row_width=2)
-    next_button = types.InlineKeyboardButton(text=">>", callback_data=json.dumps({"type":"next", "id":ad.id}))
-    prev_button = types.InlineKeyboardButton(text="<<", callback_data=json.dumps({"type":"prev", "id":ad.id}))
-    contact_button = types.InlineKeyboardButton(text="Взять напрокат", callback_data=json.dumps({"type":"rent", "id":ad.id}))
-
-    
-    k.add(prev_button, next_button)
-    k.add(contact_button)
-
-
+    k = keyboard.GLOBAL_INLINE_KEYBOARD(ad)
     bot.send_message(msg.chat.id, response_message_text, parse_mode='HTML', reply_markup=k)
 
 
